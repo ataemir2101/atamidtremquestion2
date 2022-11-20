@@ -1,0 +1,64 @@
+
+//ata 	97+116+97 = 310 mod4 ==2 (orange)
+//şimşek 115+105+109+115+101+107 = 652 mod4 ==0 (red)
+#define rccahb1enR *((unsigned volatile int *)0x40023830)
+#define gpiodmask 1<<3
+#define gpiodModr *((unsigned volatile int *)0x40020c00)
+#define gpiodP14mask 1<<28 //red
+#define gpiodP13mask 1<<26 //orange
+#define gpiodOdr *((unsigned volatile int *)0x40020c14) //(from lecture)
+#define gpiodp14onmask 1<<14
+#define gpiodp14ofmask ~(1<<14)    //0<<14
+#define gpiodp13onmask 1<<13
+#define gpiodp13ofmask ~(1<<13)
+//init-leds()  turn_ata_on()  turn_simsek_on()  turn_ata_of()  turn_simsek_of()
+void init_leds(){
+	rccahb1enR = gpiodmask;
+	gpiodModr = gpiodP14mask;
+	gpiodModr |= gpiodP13mask;
+}
+void turn_ata_on(){
+
+	gpiodOdr = gpiodp13onmask;
+
+}
+void turn_simsek_on(){
+
+	gpiodOdr = gpiodp14onmask;
+}
+void turn_simsek_of(){
+	gpiodOdr &= gpiodp14ofmask;
+}
+void turn_ata_of(){
+	gpiodOdr &= gpiodp13ofmask;
+}
+
+void delay(){
+	int delay0 = 0x000FFFFF;
+	while (delay0--){                //(from lab4)
+		}
+}
+
+int main() {
+
+int a;
+int b;
+init_leds();
+for(a=0; a<3; a++){
+
+	turn_ata_on();
+	delay();
+	turn_ata_of();
+	delay();
+
+}
+for (b=0; b<6; b++){
+
+	turn_simsek_on();
+	delay();
+	turn_simsek_of();
+	delay();
+}
+	return 0;
+
+}
